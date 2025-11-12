@@ -89,9 +89,11 @@ async function userRegister(req, res) {
 async function userProfile(req, res) {
     try {
         const user = await userSchema.findById(req.user).select("-password");
-        const employee = await employeesModel.countDocuments({user:user})
+        const employee = await employeesModel.countDocuments({user:user._id})
         user['total_employee'] = employee
-        return res.status(200).json({ ...user.toObject(),total_employee:employee ,message: "get employee data sucessfuly" })
+        const userObj = user.toObject();
+        userObj.total_employee = employeeCount;
+        return res.status(200).json({ ...userObj ,message: "get employee data sucessfuly" })
     }
     catch (err) {
         console.log({ err, message: "Failed to fetch employee data" })
